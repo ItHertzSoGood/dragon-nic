@@ -1,64 +1,71 @@
 #!/usr/bin/env bash
 
+# ANSI Escape Color Codes
+BOLDBLUE='\033[1m\033[34m'
+BOLDWHITE='\033[0m\033[1m'
+RESET='\033[0m'
+
 # See if user is running as root
 if [ "$EUID" == 0 ]; then
-    echo "Do not run this script as root."
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Do not run this script as root.${RESET}\n"
     exit
 fi
 
 # See if DragonBuild actually exists
 if ! [ -f "/usr/local/bin/dragon" ]; then
-    echo "DragonBuild was not found."
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}DragonBuild was not found.${RESET}\n"
     exit
 fi
 
 # See if DragonMake is already in working directory
 if [ -f "DragonMake" ]; then
-    echo "This directory already has a DragonMake file."
-    echo "Please make or go to a new empty directory."
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}This directory already has a DragonMake file.${RESET}\n"
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Please make or go to an empty directory.${RESET}\n"
     exit
 fi
 
 # Prompts and stuff
-echo ""
-echo "* | DragonBuild - New Instance Creator"
-echo "* | made by quiprr"
-echo "*"
-echo "* | 1.) Basic tweak"
-echo "* | 2.) Basic preferences"
-echo ""
-read -p "* | > " selection
+printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}New Instance Creator\n"
+printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Made by quiprr\n"
+printf "\n"
+printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}1.) Basic tweak\n"
+printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}2.) Basic preferences\n"
+printf "\n"
+read -p "> " selection
 if ( [ $selection != 1 ] && [ $selection != 2 ]  ) ; then
-    echo "$selection is not a valid selection."
-    echo "Please re-run the script."
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}$selection is not a valid selection.\n"
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Please re-run the script.\n"
     exit
 else
-    echo ""
-    echo "* | What is the name of your project?"
-    read -p "* | > " name
-    echo ""
-    echo "* | What is the bundle ID of your project? (e.g. com.apple.name)"
-    read -p "* | > " bundleid
-    echo ""
-    echo "* | What is the name of the author?"
-    read -p "* | > " author
-fi
+    printf "\n"
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}What is the name of your project?\n"
+    read -p "> " name
+    printf ""
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}What is the bundle ID of your project? (e.g. com.apple.name)\n"
+    read -p "> " bundleid
+    printf ""
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}What is the name of the author?\n"
+    read -p "> " author
 fi
 
 if [ "$selection" == 1 ]; then 
     # Create DragonMake
-    echo "* | Writing files..."
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Creating DragonMake...\n"
     echo "name: $name" >> DragonMake
     echo "icmd: sbreload" >> DragonMake
     echo "$name:" >> DragonMake
     echo "  type: tweak" >> DragonMake
     echo "  files:" >> DragonMake
     echo "    - Tweak.xm" >> DragonMake
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Done!\n"
     
     # Create Tweak.xm
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Creating Tweak.xm...\n"
     echo "" >> Tweak.xm
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Done!\n"
 
     # Create control
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Creating control...\n"
     echo "Package: $bundleid" >> control
     echo "Name: $name" >> control
     echo "Version: 0.0.1" >> control
@@ -68,13 +75,15 @@ if [ "$selection" == 1 ]; then
     echo "Author: $author" >> control
     echo "Section: Tweaks" >> control
     echo "Depends:" >> control
-    echo Done!
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Done!\n"
+    
+    # Finish up
     exit
 fi 
 
 if [ "$selection" == 2 ]; then 
     # Create DragonMake
-    echo "* | Writing files..."
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Creating DragonMake...\n"
     echo "name: $name" >> DragonMake
     echo "icmd: sbreload" >> DragonMake
     echo "$name:" >> DragonMake
@@ -83,12 +92,16 @@ if [ "$selection" == 2 ]; then
     echo "    - XXXRootListController.m" >> DragonMake
     echo "    - XXXRootListController.h" >> DragonMake
     echo "    - Root.plist" >> DragonMake
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Done!\n"
 
     # Create RootListController.h/m
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Creating XXXRootListControllers...\n"
     echo "" >> XXXRootListController.m
     echo "" >> XXXRootListController.h
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Done!\n"
 
     # Create Root.plist
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Creating Root and Info.plist...\n"
     mkdir Resources
     cd Resources
     echo "<?xml version="1.0" encoding="UTF-8"?>" >> Root.plist
@@ -127,7 +140,9 @@ if [ "$selection" == 2 ]; then
 	echo "    <string>XXXRootListController</string>" >> Info.plist
     echo "</dict>" >> Info.plist
     echo "</plist>" >> Info.plist
-    echo Done!
+    printf "${BOLDBLUE}[Dragon] ${BOLDWHITE}Done!\n"
+
+    # Finish up
     exit
 else
     exit
